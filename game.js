@@ -5,7 +5,7 @@ let bigRectDimensions = { x: 0, y: 0, w: 0, h: 0 };
 
 function preload() {
   // Load doll base image
-  dollImg = loadImage('img/outfit1/startingdoll.PNG');
+  dollImg = loadImage('img/startingdoll.PNG');
   
   // Load draggable items
   let filenames = ['hair_v1.png', 'outfit_v1.png', 'shoes_v1.png'];
