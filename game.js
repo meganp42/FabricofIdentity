@@ -34,7 +34,7 @@ function draw() {
   background('#FFF6E5'); // Match CSS background
 
   // Draw doll image at center
-  image(dollImg, width / 2, height / 2, 300, 600); // scale as needed
+  image(dollImg, width / 2, height / 2, 400, 600); // scale as needed
 
   // Draw all draggable items
   for (let item of items) {
