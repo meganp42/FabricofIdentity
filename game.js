@@ -1,16 +1,33 @@
 let dollImg;
-let itemImgs = [];
 let items = [];
 let bigRectDimensions = { x: 0, y: 0, w: 0, h: 0 };
 
+// Outfit data structure
+let outfits = {
+  outfit1: {
+    hair: { img: null, file: "hair_v1.png", w: 120, h: 150 },
+    outfit: { img: null, file: "outfit_v1.png", w: 165, h: 400 },
+    shoes: { img: null, file: "shoes_v1.png", w: 105, h: 70 }
+  },
+  //outfit2: {
+    //hair: { img: null, file: "hair_v2.png", w: 110, h: 110 },
+    //outfit: { img: null, file: "outfit_v2.png", w: 125, h: 190 },
+    //shoes: { img: null, file: "shoes_v2.png", w: 85, h: 65 }
+  //}
+};
+
+let currentOutfit = "outfit1";
+
 function preload() {
-  // Load doll base image
   dollImg = loadImage('img/startingdoll.PNG');
-  
-  // Load draggable items
-  let filenames = ['hair_v1.png', 'outfit_v1.png', 'shoes_v1.png'];
-  for (let name of filenames) {
-    itemImgs.push(loadImage('img/outfit1/' + name));
+
+  // Preload all outfit images
+  for (let key in outfits) {
+    let outfit = outfits[key];
+    for (let part in outfit) {
+      let filePath = `img/${key}/${outfit[part].file}`;
+      outfit[part].img = loadImage(filePath);
+    }
   }
 }
 
@@ -24,9 +41,12 @@ function setup() {
   bigRectDimensions.w = width * 0.6;
   bigRectDimensions.h = height * 0.6;
 
-  // Create draggable items from images
-  for (let i = 0; i < itemImgs.length; i++) {
-    items.push(new DraggableItem(itemImgs[i], random(width), random(height)));
+  // Resize and create draggable items for the current outfit
+  let selected = outfits[currentOutfit];
+  for (let part in selected) {
+    let item = selected[part];
+    item.img.resize(item.w, item.h);
+    items.push(new DraggableItem(item.img, random(width), random(height), item.w, item.h));
   }
 }
 
@@ -36,10 +56,27 @@ function draw() {
   // Draw doll image at center
   image(dollImg, width / 2, height / 2, 400, 600); // scale as needed
 
-  // Draw all draggable items
+  // Update and display all draggable items
   for (let item of items) {
     item.update();
     item.display();
+  }
+
+  // Check if all items are within the doll area
+  let allOnDoll = true;
+  for (let item of items) {
+    if (!item.overlapsWithDoll(width / 2, height / 2, 400, 600)) {
+      allOnDoll = false;
+      break;
+    }
+  }
+
+  // Display message if all items are on the doll
+  if (allOnDoll) {
+    fill(0);
+    textAlign(CENTER, CENTER);
+    textSize(28);
+    text("She's ready to go out!", width / 2, 650);
   }
 }
 
@@ -55,17 +92,17 @@ function mouseReleased() {
   }
 }
 
-// Class for draggable outfit parts
+// Updated class to support per-item sizing
 class DraggableItem {
-  constructor(img, x, y) {
+  constructor(img, x, y, w, h) {
     this.img = img;
     this.x = x;
     this.y = y;
     this.dragging = false;
     this.offsetX = 0;
     this.offsetY = 0;
-    this.w = 100;
-    this.h = 100;
+    this.w = w;
+    this.h = h;
   }
 
   display() {
@@ -95,4 +132,14 @@ class DraggableItem {
       this.y = mouseY - this.offsetY;
     }
   }
+
+  overlapsWithDoll(dollX, dollY, dollW, dollH) {
+    return (
+      this.x + this.w / 2 > dollX - dollW / 2 &&
+      this.x - this.w / 2 < dollX + dollW / 2 &&
+      this.y + this.h / 2 > dollY - dollH / 2 &&
+      this.y - this.h / 2 < dollY + dollH / 2
+    );
+  }
+
 }
