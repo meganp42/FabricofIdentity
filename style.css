@@ -1,8 +1,18 @@
+@font-face {
+    font-family: 'AphroditeStylistic';
+    src: url ('font/aphrodite_stylistic/AphroditeStylistic.otf');
+}
+
 body{
     background-color: #FFF6E5;
     margin: 60;
     text-align: center;
     align-items: center;
+}
+
+h1{
+    font-family: 'AphroditeStylistic';
+    font-size: 36pt;
 }
 
 
