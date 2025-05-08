@@ -1,27 +1,31 @@
 let dollImg;
 let items = [];
-let bigRectDimensions = { x: 0, y: 0, w: 0, h: 0 };
+let bgImg;
 
-// Outfit data structure
 let outfits = {
   outfit1: {
     hair: { img: null, file: "hair_v1.png", w: 120, h: 150 },
     outfit: { img: null, file: "outfit_v1.png", w: 165, h: 400 },
     shoes: { img: null, file: "shoes_v1.png", w: 105, h: 70 }
-  },
-  //outfit2: {
-    //hair: { img: null, file: "hair_v2.png", w: 110, h: 110 },
-    //outfit: { img: null, file: "outfit_v2.png", w: 125, h: 190 },
-    //shoes: { img: null, file: "shoes_v2.png", w: 85, h: 65 }
-  //}
+  }
+
+  // finishedoutfits {
+  //   finoutfit2: { img: null, file:"finoutfit2.PNG", w:400, h: 600 },
+  //   finoutfit3: { img: null, file:"finoutfit3.PNG", w:400, h: 600 },
+  //   finoutfit4: { img: null, file:"finoutfit4.PNG", w:400, h: 600 },
+  //   finoutfit5: { img: null, file:"finoutfit5.PNG", w:400, h: 600 },
+  //   finoutfit6: { img: null, file:"finoutfit6.PNG", w:400, h: 600 },
+  //   finoutfit7: { img: null, file:"finoutfit7.PNG", w:400, h: 600 },
+  //   finoutfit8: { img: null, file:"finoutfit8.PNG", w:400, h: 600 }
+  // }
 };
 
 let currentOutfit = "outfit1";
 
 function preload() {
   dollImg = loadImage('img/startingdoll.PNG');
+  bgImg = loadImage('img/background.JPG');
 
-  // Preload all outfit images
   for (let key in outfits) {
     let outfit = outfits[key];
     for (let part in outfit) {
@@ -32,16 +36,21 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(700, 700);
+  let cnv = createCanvas(windowWidth, windowHeight);
+  cnv.position(0, 0); // Optional: move canvas down so it doesn't cover the heading
   imageMode(CENTER);
   rectMode(CENTER);
 
-  bigRectDimensions.x = width / 2;
-  bigRectDimensions.y = height / 2;
-  bigRectDimensions.w = width * 0.6;
-  bigRectDimensions.h = height * 0.6;
+  // Add the heading
+  let header = createElement('h1', 'Welcome to my closet!');
+  header.style('font-family', 'AphroditeStylistic');
+  header.style('color', '#ffffff');
+  header.style('text-align', 'center');
+  header.style('width', '100%');
+  header.position(0, 10); // x = 0, y = 10px from top
 
-  // Resize and create draggable items for the current outfit
+
+  // Create draggable outfit items
   let selected = outfits[currentOutfit];
   for (let part in selected) {
     let item = selected[part];
@@ -50,11 +59,13 @@ function setup() {
   }
 }
 
-function draw() {
-  background('#FFF6E5'); // Match CSS background
 
-  // Draw doll image at center
-  image(dollImg, width / 2, height / 2, 400, 600); // scale as needed
+function draw() {
+  // Draw background scaled to full canvas
+  image(bgImg, width / 2, height / 2, width, height);
+
+  // Draw the doll in the center
+  image(dollImg, width / 2, height / 2 + 40, 400, 600);
 
   // Update and display all draggable items
   for (let item of items) {
@@ -62,21 +73,17 @@ function draw() {
     item.display();
   }
 
-  // Check if all items are within the doll area
-  let allOnDoll = true;
-  for (let item of items) {
-    if (!item.overlapsWithDoll(width / 2, height / 2, 400, 600)) {
-      allOnDoll = false;
-      break;
-    }
-  }
+  // Check if all items are placed on the doll
+  let allOnDoll = items.every(item =>
+    item.overlapsWithDoll(width / 2, height / 2, 400, 600)
+  );
 
-  // Display message if all items are on the doll
   if (allOnDoll) {
-    fill(0);
+    fill(255);
     textAlign(CENTER, CENTER);
     textSize(28);
-    text("She's ready to go out!", width / 2, 650);
+    text.style('font-family', 'benguiat');
+    text("She's ready to go out!", width / 2, height - 20);
   }
 }
 
@@ -92,7 +99,11 @@ function mouseReleased() {
   }
 }
 
-// Updated class to support per-item sizing
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+// DraggableItem class
 class DraggableItem {
   constructor(img, x, y, w, h) {
     this.img = img;
@@ -141,5 +152,4 @@ class DraggableItem {
       this.y - this.h / 2 < dollY + dollH / 2
     );
   }
-
 }
