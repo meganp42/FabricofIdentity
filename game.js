@@ -3,6 +3,23 @@ let bgImg;
 let items = [];
 let currentRound = 0;
 
+let itemSizes = {
+  "img/outfit1/hair_v1.png": [100, 120],
+  "img/outfit1/outfit_v1.png": [160, 400],
+  "img/outfit1/shoes_v1.png": [80, 60],
+  "img/outfit2/hair_v2.png": [110, 130],
+  "img/outfit2/outfit_v2.png": [170, 420],
+  "img/outfit2/shoes_v2.png": [85, 65],
+  "img/outfit3/hair_v3.png": [100,120],
+  "img/outfit3/outfit_v3.png": [160, 400],
+  "img/outfit3/shoes_v3.png": [80, 60],
+  "img/outfit4/hair_v4.png": [100, 120],
+  "img/outfit1/shirt_v4.png": [170, 210],
+  "img/outfit1/pants_v4.png": [170, 310],
+  "img/outfit4/shoes_v4.png": [80, 60],
+};
+
+
 let outfitData = [
   {
     phrase: "chúc mừng năm mới! Happy Lunar New Year. Let's go celebrate with family.",
@@ -81,7 +98,7 @@ function setup() {
   promptP.style('width', '100%');
 
   nextButton = createButton('Give up / Next');
-  nextButton.position(width / 2 - 50, 21);
+  nextButton.position(width / 2 - 50, 220);
   nextButton.mousePressed(nextRound);
 
   startRound(currentRound);
@@ -101,11 +118,14 @@ function startRound(roundIndex) {
 
   // Add correct outfit parts
   for (let filePath of outfit.correctParts) {
-    let fileName = filePath.split('/').pop(); // Get "hair_v1.png"
+    let fileName = filePath.split('/').pop();
     let img = allImages[outfit.outfitKey][fileName];
-    items.push(new DraggableItem(img, random(width), random(height), 100, 180, filePath));
-  }
 
+    // Get custom size or fallback to image size
+    let [w, h] = itemSizes[filePath] || [img.width, img.height];
+
+    items.push(new DraggableItem(img, random(width), random(height), w, h, filePath));
+  }
 
   // Add 1 random decoy from another outfit
   let otherOutfits = outfitData.filter((_, i) => i !== roundIndex);
@@ -113,14 +133,17 @@ function startRound(roundIndex) {
   let decoyFilePath = random(randomOutfit.correctParts);
   let decoyFileName = decoyFilePath.split('/').pop();
   let decoyImg = allImages[randomOutfit.outfitKey][decoyFileName];
-  items.push(new DraggableItem(decoyImg, random(width), random(height), 100, 180, decoyFilePath));
 
+  let [dw, dh] = itemSizes[decoyFilePath] || [decoyImg.width, decoyImg.height];
+
+  items.push(new DraggableItem(decoyImg, random(width), random(height), dw, dh, decoyFilePath));
 }
+
 
 function draw() {
   background(0);
   image(bgImg, width / 2, height / 2, width, height);
-  image(dollImg, width / 2, height / 2 + 40, 400, 600);
+  image(dollImg, width / 2, height / 2 + 130, 400, 600);
 
   for (let item of items) {
     item.update();
