@@ -2,6 +2,7 @@ let dollImg;
 let bgImg;
 let items = [];
 let currentRound = 0;
+let timeToDisplayWinText = false;
 
 let itemSizes = {
   "img/outfit1/hair_v1.png": [120, 140],
@@ -15,8 +16,8 @@ let itemSizes = {
   "img/outfit3/outfit_v3.png": [160, 400],
   "img/outfit3/shoes_v3.png": [80, 60],
   "img/outfit4/hair_v4.png": [100, 120],
-  "img/outfit1/shirt_v4.png": [160, 180],
-  "img/outfit1/pants_v4.png": [170, 310],
+  "img/outfit4/shirt_v4.png": [160, 180],
+  "img/outfit4/pants_v4.png": [170, 310],
   "img/outfit4/shoes_v4.png": [80, 60],
 };
 
@@ -156,15 +157,20 @@ function draw() {
     item.display();
   }
 
-  if (!correct && checkCorrectOutfit()) {
-    correct = true;
-    setTimeout(() => {
-      clearItems();
-      image(finOutfits[`finoutfit${currentRound + 1}`], width / 2, height / 2 + 40, 400, 600);
-      fill(255);
+  if (timeToDisplayWinText) {
+    fill(255);
       textAlign(CENTER, CENTER);
       textSize(28);
       text("She's ready to go out!", width / 2, height - 100);
+  }
+
+  if (!correct && checkCorrectOutfit()) {
+    print('here');
+    correct = true;
+    timeToDisplayWinText = true;
+    setTimeout(() => {
+      clearItems();
+      image(finOutfits[`finoutfit${currentRound + 1}`], width / 2, height / 2 + 40, 400, 600);
       setTimeout(() => {
         nextRound();
       }, 2000);
@@ -175,12 +181,13 @@ function draw() {
 function checkCorrectOutfit() {
   let correctFiles = outfitData[currentRound].correctParts;
   let placed = items.filter(item =>
-    item.overlapsWithDoll(width / 2, height / 2 + 40, 400, 600)
+    item.overlapsWithDoll(width / 2, height / 2 + 130, 400, 600)
   ).map(item => item.file);
   return correctFiles.every(f => placed.includes(f)) && placed.length === correctFiles.length;
 }
 
 function nextRound() {
+  timeToDisplayWinText = false;
   currentRound++;
   if (currentRound < outfitData.length) {
     startRound(currentRound);
