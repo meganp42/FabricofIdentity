@@ -77,11 +77,11 @@ function setup() {
   promptP.style('color', 'white');
   promptP.style('font-size', '20px');
   promptP.style('text-align', 'center');
-  promptP.position(0, 60);
+  promptP.position(0, 160);
   promptP.style('width', '100%');
 
   nextButton = createButton('Give up / Next');
-  nextButton.position(width / 2 - 50, height - 60);
+  nextButton.position(width / 2 - 50, 21);
   nextButton.mousePressed(nextRound);
 
   startRound(currentRound);
@@ -103,7 +103,7 @@ function startRound(roundIndex) {
   for (let filePath of outfit.correctParts) {
     let fileName = filePath.split('/').pop(); // Get "hair_v1.png"
     let img = allImages[outfit.outfitKey][fileName];
-    items.push(new DraggableItem(img, random(width), random(height), img.width, img.height, filePath));
+    items.push(new DraggableItem(img, random(width), random(height), 100, 180, filePath));
   }
 
 
@@ -113,7 +113,7 @@ function startRound(roundIndex) {
   let decoyFilePath = random(randomOutfit.correctParts);
   let decoyFileName = decoyFilePath.split('/').pop();
   let decoyImg = allImages[randomOutfit.outfitKey][decoyFileName];
-  items.push(new DraggableItem(decoyImg, random(width), random(height), decoyImg.width, decoyImg.height, decoyFilePath));
+  items.push(new DraggableItem(decoyImg, random(width), random(height), 100, 180, decoyFilePath));
 
 }
 
