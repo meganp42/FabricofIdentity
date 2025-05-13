@@ -57,7 +57,7 @@ function preload() {
       allImages[folder][file] = loadImage(`img/${folder}/${file}`);
     }
 
-    finOutfits[`finoutfit${i}`] = loadImage(`img/FinishedDrawnOutfit/finoutfit${i}.png`);
+    finOutfits[`finoutfit${i}`] = loadImage(`img/FinishedDrawnOutfits/finoutfit${i}.png`);
   }
 }
 
@@ -100,17 +100,21 @@ function startRound(roundIndex) {
   promptP.html(outfit.phrase);
 
   // Add correct outfit parts
-  for (let file of outfit.correctParts) {
-    let img = allImages[outfit.outfitKey][file];
-    items.push(new DraggableItem(img, random(width), random(height), img.width, img.height, file));
+  for (let filePath of outfit.correctParts) {
+    let fileName = filePath.split('/').pop(); // Get "hair_v1.png"
+    let img = allImages[outfit.outfitKey][fileName];
+    items.push(new DraggableItem(img, random(width), random(height), img.width, img.height, filePath));
   }
+
 
   // Add 1 random decoy from another outfit
   let otherOutfits = outfitData.filter((_, i) => i !== roundIndex);
   let randomOutfit = random(otherOutfits);
-  let decoyFile = random(randomOutfit.correctParts);
-  let decoyImg = allImages[randomOutfit.outfitKey][decoyFile];
-  items.push(new DraggableItem(decoyImg, random(width), random(height), decoyImg.width, decoyImg.height, decoyFile));
+  let decoyFilePath = random(randomOutfit.correctParts);
+  let decoyFileName = decoyFilePath.split('/').pop();
+  let decoyImg = allImages[randomOutfit.outfitKey][decoyFileName];
+  items.push(new DraggableItem(decoyImg, random(width), random(height), decoyImg.width, decoyImg.height, decoyFilePath));
+
 }
 
 function draw() {
