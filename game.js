@@ -4,9 +4,9 @@ let items = [];
 let currentRound = 0;
 
 let itemSizes = {
-  "img/outfit1/hair_v1.png": [100, 120],
+  "img/outfit1/hair_v1.png": [120, 140],
   "img/outfit1/outfit_v1.png": [160, 400],
-  "img/outfit1/shoes_v1.png": [80, 60],
+  "img/outfit1/shoes_v1.png": [100, 60],
   "img/outfit2/hair_v2.png": [110, 130],
   "img/outfit2/outfit_v2.png": [170, 420],
   "img/outfit2/shoes_v2.png": [85, 65],
@@ -135,6 +135,11 @@ function startRound(roundIndex) {
   let decoyImg = allImages[randomOutfit.outfitKey][decoyFileName];
 
   let [dw, dh] = itemSizes[decoyFilePath] || [decoyImg.width, decoyImg.height];
+
+  if (!itemSizes[decoyFilePath]) {
+    console.log("Missing itemSizes entry for:", decoyFilePath);
+  }
+
 
   items.push(new DraggableItem(decoyImg, random(width), random(height), dw, dh, decoyFilePath));
 }
